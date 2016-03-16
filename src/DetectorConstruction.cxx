@@ -16,6 +16,11 @@
 #include "G4MultiFunctionalDetector.hh"
 #include "G4VPrimitiveScorer.hh"
 
+
+#include "G4Colour.hh"
+#include "G4Tubs.hh"
+#include "G4VisAttributes.hh"
+
 DetectorConstruction::DetectorConstruction() :
 	G4VUserDetectorConstruction()
 { }
@@ -35,6 +40,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
 	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
+	G4Material* Cu	= nist->FindOrBuildMaterial("G4_Cu");
+	G4Material* Fe	= nist->FindOrBuildMaterial("G4_Fe");
+	G4Material* Ni	= nist->FindOrBuildMaterial("G4_Ni");
+	G4Material* W 	= nist->FindOrBuildMaterial("G4_W");
+	G4Material* W95 = new G4Material("W95",18.*g/cm3,4,kStateSolid);
+	W95->AddMaterial(W,0.95);
+	W95->AddMaterial(Cu,0.017);
+	W95->AddMaterial(Ni,0.017);
+	W95->AddMaterial(Fe,0.016);
+
+	//colors
+
+	G4VisAttributes * red_solid = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
+	red_solid->SetForceSolid(true);
 
 	// Construct the World
 	G4double world_sizeXY = 5*cm;
@@ -60,6 +79,28 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 			checkOverlaps);	//overlap checking
 
 	//--------------Build the required geometry here-----------------//
+	G4double innerRadius = 3.25*mm;
+	G4double outerRadius = 6*mm;
+	G4double hz = 39.5*mm;
+	G4double startAngle = 0.*deg;
+	G4double spanningAngle = 360.*deg;
+
+
+	G4Tubs* Coll1
+	  = new G4Tubs("Primary_collimator",
+	      innerRadius, 
+	      outerRadius,
+	      hz,
+	      startAngle, 
+	      spanningAngle);
+	G4LogicalVolume* Coll1Log
+	  = new G4LogicalVolume(Coll1, W95, "Primary_collimator");
+	Coll1Log->SetVisAttributes(red_solid);
+
+
+
+	G4RotationMatrix *rotation=new G4RotationMatrix();
+	G4VPhysicalVolume* Coll1Phys = new G4PVPlacement(rotation,G4ThreeVector(),Coll1Log,"Tube",logicWorld,false,0,checkOverlaps);
 
 	//Return the world
 	return physWorld;
