@@ -20,6 +20,8 @@
 #include "G4Colour.hh"
 #include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
+#include "G4GeometryManager.hh"
+#include "G4RunManager.hh"
 
 DetectorConstruction::DetectorConstruction() :
 	G4VUserDetectorConstruction()
@@ -27,6 +29,23 @@ DetectorConstruction::DetectorConstruction() :
 
 DetectorConstruction::~DetectorConstruction()
 { }
+
+
+void DetectorConstruction::SetInnerRadius(G4double innerRadius)
+{
+
+	G4VSolid* solidDetector;
+	G4Tubs* tube;
+	G4GeometryManager::GetInstance()->OpenGeometry(Coll1Phys);
+	solidDetector = Coll1Phys->GetLogicalVolume()->GetSolid();
+	tube = dynamic_cast<G4Tubs*>(solidDetector);
+	tube->SetInnerRadius(innerRadius*mm);
+#ifdef _DEBUG
+	G4cout<<"Tube innerRadius "<<nb<<"changed to "<<innerRadius<<" mm"<<G4endl;
+#endif
+	G4GeometryManager::GetInstance()->CloseGeometry(Coll1Phys);
+	G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
 
 /**This routine is used to construct the geometry to be simulated. This includes the
  * necessary materials to produce objects.
@@ -100,7 +119,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 
 	G4RotationMatrix *rotation=new G4RotationMatrix();
-	G4VPhysicalVolume* Coll1Phys = new G4PVPlacement(rotation,G4ThreeVector(),Coll1Log,"Tube",logicWorld,false,0,checkOverlaps);
+	Coll1Phys = new G4PVPlacement(rotation,G4ThreeVector(),Coll1Log,"Tube",logicWorld,false,0,checkOverlaps);
 
 	//Return the world
 	return physWorld;
