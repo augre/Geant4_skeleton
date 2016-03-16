@@ -1,4 +1,5 @@
 #include "DetectorConstruction.h"
+#include "DetectorMessenger.h"
 
 //Material manager
 #include "G4NistManager.hh"
@@ -25,10 +26,14 @@
 
 DetectorConstruction::DetectorConstruction() :
 	G4VUserDetectorConstruction()
-{ }
+{ 
+	detectorMessenger = new DetectorMessenger(this);
+}
 
 DetectorConstruction::~DetectorConstruction()
-{ }
+{
+	delete detectorMessenger;
+}
 
 
 void DetectorConstruction::SetInnerRadius(G4double innerRadius)

@@ -20,6 +20,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
 	private:
 		G4VPhysicalVolume* Coll1Phys;
+		DetectorMessenger* detectorMessenger;
 		
 	public:
 		DetectorConstruction();
