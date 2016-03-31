@@ -14,12 +14,15 @@ class G4Material;
 class G4Colour;
 class G4Tubs;
 
+extern "C" {
+#include "LinkedList.h"
+}
+
 #include "G4VUserDetectorConstruction.hh"
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
 	private:
-		G4VPhysicalVolume* Coll1Phys;
 		DetectorMessenger* detectorMessenger;
 		
 	public:
@@ -29,6 +32,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		virtual G4VPhysicalVolume* Construct();
 		virtual void ConstructSDandField();
 		virtual void SetInnerRadius(G4double);
+	protected:
+		List lista;
+		ListElmnt *element;
+		G4VPhysicalVolume *data;
 };
 
 #endif
