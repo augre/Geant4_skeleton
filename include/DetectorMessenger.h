@@ -6,6 +6,7 @@
 class DetectorConstruction;
 class G4UIdirectory;
 class G4UIcmdWithADouble;
+class G4UIcmdWithoutParameter;
 
 class DetectorMessenger: public G4UImessenger
 {
@@ -19,6 +20,7 @@ class DetectorMessenger: public G4UImessenger
     DetectorConstruction* Detector;
     G4UIdirectory*             SkeletontronDir;
     G4UIcmdWithADouble*        SetCubeSizeCmd;
+    G4UIcmdWithoutParameter*   CreateNewCubeCmd;
 };
 
 

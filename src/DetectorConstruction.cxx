@@ -60,10 +60,30 @@ void DetectorConstruction::CubeSize(G4double sideLength)
 
 void DetectorConstruction::CreateCube()
 {
-
 	G4RotationMatrix *rotation=new G4RotationMatrix();
-	data = new G4PVPlacement(rotation,G4ThreeVector(),CubeLog,"Cube",logicWorld,false,0,false);
-	LinkedList_InsertNext(&lista, NULL, data);
+	if (list_size(&lista)==0)
+	{
+		data = new G4PVPlacement(rotation,G4ThreeVector(),CubeLog,"Cube",logicWorld,false,0,false);
+		LinkedList_InsertNext(&lista, NULL, data);
+	}
+	else
+	{
+		element = list_head(&lista);
+		G4ThreeVector translation;
+		data=(G4VPhysicalVolume*) list_data(element);
+		translation = data->GetTranslation();
+		G4double xc=translation.getX();
+		G4cout<<"translation "<<translation<<G4endl;
+		G4cout<<"x coordinate "<<xc<<G4endl;
+		data = new G4PVPlacement(rotation,G4ThreeVector(xc+600,0,0),CubeLog,"Cube",logicWorld,false,0,false);
+		LinkedList_InsertNext(&lista, NULL, data);
+		element = list_head(&lista);
+		data=(G4VPhysicalVolume*) list_data(element);
+		translation = data->GetTranslation();
+		xc=translation.getX();
+		G4cout<<"new cube translation "<<translation<<G4endl;
+		G4cout<<"new x coordinate "<<xc<<G4endl;
+	}
 }
 
 /**This routine is used to construct the geometry to be simulated. This includes the
