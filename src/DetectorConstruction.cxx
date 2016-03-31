@@ -58,6 +58,14 @@ void DetectorConstruction::CubeSize(G4double sideLength)
 	G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 
+void DetectorConstruction::CreateCube()
+{
+
+	G4RotationMatrix *rotation=new G4RotationMatrix();
+	data = new G4PVPlacement(rotation,G4ThreeVector(),CubeLog,"Cube",logicWorld,false,0,false);
+	LinkedList_InsertNext(&lista, NULL, data);
+}
+
 /**This routine is used to construct the geometry to be simulated. This includes the
  * necessary materials to produce objects.
  */
@@ -93,7 +101,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 		new G4Box("World",                       //its name
 				0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);    //its size
 
-	G4LogicalVolume* logicWorld =                         
+	logicWorld =
 		new G4LogicalVolume(solidWorld,          //its solid
 				air,           //its material
 				"World");      //its name
@@ -110,21 +118,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 	//--------------Build the required geometry here-----------------//
 	G4double sideL= 25.*cm;
-
-
-	G4Box* Cube
+	Cube
 	  = new G4Box("Cube",
 	      sideL,
 	      sideL,
 	      sideL);
-	G4LogicalVolume* CubeLog
+	CubeLog
 	  = new G4LogicalVolume(Cube, W95, "Primary_collimator");
 	CubeLog->SetVisAttributes(red_solid);
 
-
-	G4RotationMatrix *rotation=new G4RotationMatrix();
-	data = new G4PVPlacement(rotation,G4ThreeVector(),CubeLog,"Cube",logicWorld,false,0,checkOverlaps);
-	LinkedList_InsertNext(&lista, NULL, data);
+	this->CreateCube();
 
 	//Return the world
 	return physWorld;

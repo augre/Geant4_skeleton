@@ -32,10 +32,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		virtual G4VPhysicalVolume* Construct();
 		virtual void ConstructSDandField();
 		virtual void CubeSize(G4double);
+		virtual void CreateCube();
 	protected:
 		List lista;
 		ListElmnt *element;
 		G4VPhysicalVolume *data;
+		G4Box *Cube;
+		G4LogicalVolume *CubeLog;
+		G4LogicalVolume* logicWorld;
 };
 
 #endif
