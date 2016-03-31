@@ -18,7 +18,7 @@ class DetectorMessenger: public G4UImessenger
   private:
     DetectorConstruction* Detector;
     G4UIdirectory*             SkeletontronDir;
-    G4UIcmdWithADouble*        SetInnerRadiusCmd;
+    G4UIcmdWithADouble*        SetCubeSizeCmd;
 };
 
 

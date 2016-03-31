@@ -1,6 +1,8 @@
 #include "DetectorConstruction.h"
 #include "DetectorMessenger.h"
 
+
+
 //Material manager
 #include "G4NistManager.hh"
 //Basic Units.
@@ -12,6 +14,7 @@
 
 //Types of Volumes
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 
 //Include necessary scorers
 #include "G4MultiFunctionalDetector.hh"
@@ -19,7 +22,6 @@
 
 
 #include "G4Colour.hh"
-#include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
 #include "G4GeometryManager.hh"
 #include "G4RunManager.hh"
@@ -28,27 +30,31 @@ DetectorConstruction::DetectorConstruction() :
 	G4VUserDetectorConstruction()
 { 
 	detectorMessenger = new DetectorMessenger(this);
+	LinkedList_Create(&lista, free);
 }
 
 DetectorConstruction::~DetectorConstruction()
 {
 	delete detectorMessenger;
+	LinkedList_Destroy(&lista);
 }
 
 
-void DetectorConstruction::SetInnerRadius(G4double innerRadius)
+void DetectorConstruction::CubeSize(G4double sideLength)
 {
 
 	G4VSolid* solidDetector;
-	G4Tubs* tube;
-	G4GeometryManager::GetInstance()->OpenGeometry(Coll1Phys);
-	solidDetector = Coll1Phys->GetLogicalVolume()->GetSolid();
-	tube = dynamic_cast<G4Tubs*>(solidDetector);
-	tube->SetInnerRadius(innerRadius*mm);
+	G4Box* cube;
+	G4GeometryManager::GetInstance()->OpenGeometry(data);
+	solidDetector = data->GetLogicalVolume()->GetSolid();
+	cube = dynamic_cast<G4Box*>(solidDetector);
+	cube->SetXHalfLength(sideLength*cm);
+	cube->SetYHalfLength(sideLength*cm);
+	cube->SetZHalfLength(sideLength*cm);
 #ifdef _DEBUG
-	G4cout<<"Tube innerRadius "<<nb<<"changed to "<<innerRadius<<" mm"<<G4endl;
+	G4cout<<"Cube sideLength changed to "<<sideLength<<" cm"<<G4endl;
 #endif
-	G4GeometryManager::GetInstance()->CloseGeometry(Coll1Phys);
+	G4GeometryManager::GetInstance()->CloseGeometry(data);
 	G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 
@@ -80,8 +86,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	red_solid->SetForceSolid(true);
 
 	// Construct the World
-	G4double world_sizeXY = 5*cm;
-	G4double world_sizeZ  = 30*cm;
+	G4double world_sizeXY = 1000*cm;
+	G4double world_sizeZ  = 1000*cm;
 
 	G4Box* solidWorld =    
 		new G4Box("World",                       //its name
@@ -103,28 +109,22 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 			checkOverlaps);	//overlap checking
 
 	//--------------Build the required geometry here-----------------//
-	G4double innerRadius = 3.25*mm;
-	G4double outerRadius = 6*mm;
-	G4double hz = 39.5*mm;
-	G4double startAngle = 0.*deg;
-	G4double spanningAngle = 360.*deg;
+	G4double sideL= 25.*cm;
 
 
-	G4Tubs* Coll1
-	  = new G4Tubs("Primary_collimator",
-	      innerRadius, 
-	      outerRadius,
-	      hz,
-	      startAngle, 
-	      spanningAngle);
-	G4LogicalVolume* Coll1Log
-	  = new G4LogicalVolume(Coll1, W95, "Primary_collimator");
-	Coll1Log->SetVisAttributes(red_solid);
-
+	G4Box* Cube
+	  = new G4Box("Cube",
+	      sideL,
+	      sideL,
+	      sideL);
+	G4LogicalVolume* CubeLog
+	  = new G4LogicalVolume(Cube, W95, "Primary_collimator");
+	CubeLog->SetVisAttributes(red_solid);
 
 
 	G4RotationMatrix *rotation=new G4RotationMatrix();
-	Coll1Phys = new G4PVPlacement(rotation,G4ThreeVector(),Coll1Log,"Tube",logicWorld,false,0,checkOverlaps);
+	data = new G4PVPlacement(rotation,G4ThreeVector(),CubeLog,"Cube",logicWorld,false,0,checkOverlaps);
+	LinkedList_InsertNext(&lista, NULL, data);
 
 	//Return the world
 	return physWorld;

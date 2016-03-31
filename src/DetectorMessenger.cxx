@@ -10,20 +10,20 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* Det):Detector(Det)
 	SkeletontronDir = new G4UIdirectory("/skeleton/");
 	SkeletontronDir->SetGuidance("UI commands to use DetectorConstruction methods.");
 
-	SetInnerRadiusCmd = new G4UIcmdWithADouble("/skeleton/SetInnerRadius",this);
-	SetInnerRadiusCmd->SetGuidance("Set the inner radius of the tube.");
+	SetCubeSizeCmd= new G4UIcmdWithADouble("/skeleton/SetCubeSizeCmd",this);
+	SetCubeSizeCmd->SetGuidance("Set the length of the sides of the cube");
   
 }
 
 DetectorMessenger::~DetectorMessenger()
 {
 	delete SkeletontronDir;
-	delete SetInnerRadiusCmd;
+	delete SetCubeSizeCmd;
 }
 
 void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 { 
-	if( command == SetInnerRadiusCmd ) {
-		Detector->SetInnerRadius(SetInnerRadiusCmd->GetNewDoubleValue(newValue));
+	if( command == SetCubeSizeCmd) {
+		Detector->CubeSize(SetCubeSizeCmd->GetNewDoubleValue(newValue));
 	}
 }

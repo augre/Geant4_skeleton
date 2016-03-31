@@ -31,7 +31,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		
 		virtual G4VPhysicalVolume* Construct();
 		virtual void ConstructSDandField();
-		virtual void SetInnerRadius(G4double);
+		virtual void CubeSize(G4double);
 	protected:
 		List lista;
 		ListElmnt *element;
