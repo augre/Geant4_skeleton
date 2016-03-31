@@ -30,6 +30,7 @@ DetectorConstruction::DetectorConstruction() :
 	G4VUserDetectorConstruction()
 { 
 	detectorMessenger = new DetectorMessenger(this);
+	UImanager = G4UImanager::GetUIpointer();
 	LinkedList_Create(&lista, free);
 }
 
@@ -42,7 +43,6 @@ DetectorConstruction::~DetectorConstruction()
 
 void DetectorConstruction::CubeSize(G4double sideLength)
 {
-
 	G4VSolid* solidDetector;
 	G4Box* cube;
 	G4GeometryManager::GetInstance()->OpenGeometry(data);
@@ -56,11 +56,11 @@ void DetectorConstruction::CubeSize(G4double sideLength)
 #endif
 	G4GeometryManager::GetInstance()->CloseGeometry(data);
 	G4RunManager::GetRunManager()->GeometryHasBeenModified();
+	UImanager->ApplyCommand("/vis/scene/notifyHandlers");
 }
 
 void DetectorConstruction::CreateCube()
 {
-	UImanager = G4UImanager::GetUIpointer();
 	G4RotationMatrix *rotation=new G4RotationMatrix();
 	if (list_size(&lista)==0)
 	{
@@ -83,7 +83,7 @@ void DetectorConstruction::CreateCube()
 		translation = data->GetTranslation();
 		xc=translation.getX();
 		G4cout<<"new cube translation "<<translation<<G4endl;
-		G4cout<<"new x coordinate "<<xc<<G4endl;
+		G4cout<<"number of cubes "<<list_size(&lista)<<G4endl;
 	}
 	UImanager->ApplyCommand("/vis/scene/notifyHandlers");
 }
