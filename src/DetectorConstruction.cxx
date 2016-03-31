@@ -60,6 +60,7 @@ void DetectorConstruction::CubeSize(G4double sideLength)
 
 void DetectorConstruction::CreateCube()
 {
+	UImanager = G4UImanager::GetUIpointer();
 	G4RotationMatrix *rotation=new G4RotationMatrix();
 	if (list_size(&lista)==0)
 	{
@@ -84,6 +85,7 @@ void DetectorConstruction::CreateCube()
 		G4cout<<"new cube translation "<<translation<<G4endl;
 		G4cout<<"new x coordinate "<<xc<<G4endl;
 	}
+	UImanager->ApplyCommand("/vis/scene/notifyHandlers");
 }
 
 /**This routine is used to construct the geometry to be simulated. This includes the

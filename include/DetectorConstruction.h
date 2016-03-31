@@ -19,6 +19,7 @@ extern "C" {
 }
 
 #include "G4VUserDetectorConstruction.hh"
+#include "G4UImanager.hh"
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -40,6 +41,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4Box *Cube;
 		G4LogicalVolume *CubeLog;
 		G4LogicalVolume* logicWorld;
+		G4UImanager* UImanager;
 };
 
 #endif
